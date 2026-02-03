@@ -59,8 +59,7 @@ async fn main() -> Result<()> {
 /// Execute the SQL query against the provided file
 async fn run_query(args: &CliArgs) -> Result<()> {
     // Create query engine
-    let mut engine = QueryEngine::new()
-        .context("Failed to initialize query engine")?;
+    let mut engine = QueryEngine::new().context("Failed to initialize query engine")?;
 
     // Register the file as a table
     engine
@@ -95,11 +94,9 @@ async fn run_query(args: &CliArgs) -> Result<()> {
 /// Initialize tracing subscriber with appropriate log level
 fn init_tracing(verbose: bool) {
     let filter = if verbose {
-        EnvFilter::try_from_default_env()
-            .unwrap_or_else(|_| EnvFilter::new("debug"))
+        EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("debug"))
     } else {
-        EnvFilter::try_from_default_env()
-            .unwrap_or_else(|_| EnvFilter::new("info"))
+        EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"))
     };
 
     tracing_subscriber::registry()

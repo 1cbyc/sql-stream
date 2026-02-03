@@ -64,11 +64,7 @@ impl QueryEngine {
         let extension = path
             .extension()
             .and_then(|ext| ext.to_str())
-            .ok_or_else(|| {
-                SqlStreamError::UnsupportedFormat(
-                    path.to_string_lossy().to_string()
-                )
-            })?;
+            .ok_or_else(|| SqlStreamError::UnsupportedFormat(path.to_string_lossy().to_string()))?;
 
         match extension.to_lowercase().as_str() {
             "csv" => {
@@ -77,10 +73,7 @@ impl QueryEngine {
                     .register_csv(table_name, file_path, CsvReadOptions::new())
                     .await
                     .map_err(|e| {
-                        SqlStreamError::TableRegistration(
-                            table_name.to_string(),
-                            e.to_string(),
-                        )
+                        SqlStreamError::TableRegistration(table_name.to_string(), e.to_string())
                     })?;
             }
             "json" => {
@@ -89,16 +82,11 @@ impl QueryEngine {
                     .register_json(table_name, file_path, NdJsonReadOptions::default())
                     .await
                     .map_err(|e| {
-                        SqlStreamError::TableRegistration(
-                            table_name.to_string(),
-                            e.to_string(),
-                        )
+                        SqlStreamError::TableRegistration(table_name.to_string(), e.to_string())
                     })?;
             }
             _ => {
-                return Err(SqlStreamError::UnsupportedFormat(
-                    extension.to_string()
-                ));
+                return Err(SqlStreamError::UnsupportedFormat(extension.to_string()));
             }
         }
 
@@ -120,9 +108,11 @@ impl QueryEngine {
         info!("Executing SQL query");
         debug!("Query: {}", sql);
 
-        let df = self.ctx.sql(sql).await.map_err(|e| {
-            SqlStreamError::QueryExecution(e.to_string())
-        })?;
+        let df = self
+            .ctx
+            .sql(sql)
+            .await
+            .map_err(|e| SqlStreamError::QueryExecution(e.to_string()))?;
 
         Ok(df)
     }

@@ -51,11 +51,7 @@ pub struct CliArgs {
     pub table_name: String,
 
     /// Enable verbose debug logging
-    #[arg(
-        short = 'v',
-        long = "verbose",
-        help = "Enable verbose logging output"
-    )]
+    #[arg(short = 'v', long = "verbose", help = "Enable verbose logging output")]
     pub verbose: bool,
 }
 
@@ -116,7 +112,7 @@ mod tests {
             table_name: "data".to_string(),
             verbose: false,
         };
-        
+
         assert_eq!(args.table_name, "data");
         assert_eq!(args.query, "SELECT * FROM data");
     }

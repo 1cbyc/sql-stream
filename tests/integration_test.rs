@@ -84,7 +84,9 @@ async fn test_csv_group_by() {
         .unwrap();
 
     let df = engine
-        .execute_query("SELECT city, COUNT(*) as count FROM employees GROUP BY city ORDER BY count DESC")
+        .execute_query(
+            "SELECT city, COUNT(*) as count FROM employees GROUP BY city ORDER BY count DESC",
+        )
         .await
         .unwrap();
 
@@ -134,9 +136,7 @@ async fn test_json_aggregation() {
 async fn test_invalid_file() {
     let mut engine = QueryEngine::new().unwrap();
 
-    let result = engine
-        .register_file("nonexistent.csv", "test")
-        .await;
+    let result = engine.register_file("nonexistent.csv", "test").await;
 
     assert!(matches!(result, Err(SqlStreamError::FileNotFound(_))));
 }
@@ -170,9 +170,7 @@ async fn test_invalid_sql() {
         .await
         .unwrap();
 
-    let result = engine
-        .execute_query("INVALID SQL QUERY")
-        .await;
+    let result = engine.execute_query("INVALID SQL QUERY").await;
 
     assert!(result.is_err());
 }
