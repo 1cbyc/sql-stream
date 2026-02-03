@@ -6,8 +6,16 @@ authors = ["SQL Stream Contributors"]
 description = "A production-grade CLI tool for executing SQL queries against CSV/JSON files using streaming architecture"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/1cbyc/sql-stream"
+homepage = "https://github.com/1cbyc/sql-stream"
+documentation = "https://docs.rs/sql-stream"
+readme = "README.md"
 keywords = ["sql", "csv", "json", "datafusion", "cli"]
 categories = ["command-line-utilities", "database"]
+exclude = [
+    "tests/fixtures/*",
+    "target/*",
+    ".github/*",
+]
 
 [dependencies]
 # Core SQL engine

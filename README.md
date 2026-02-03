@@ -4,6 +4,41 @@ A CLI tool for executing SQL queries against CSV/JSON files using a zero-copy, s
 
 ## Installation
 
+### From Cargo (Recommended)
+
+```bash
+cargo install sql-stream
+```
+
+### From GitHub Releases
+
+Download pre-built binaries for your platform from the [releases page](https://github.com/1cbyc/sql-stream/releases):
+
+**Linux (x86_64)**
+```bash
+wget https://github.com/1cbyc/sql-stream/releases/latest/download/sql-stream-linux-x86_64
+chmod +x sql-stream-linux-x86_64
+sudo mv sql-stream-linux-x86_64 /usr/local/bin/sql-stream
+```
+
+**macOS (Intel)**
+```bash
+curl -L https://github.com/1cbyc/sql-stream/releases/latest/download/sql-stream-macos-x86_64 -o sql-stream
+chmod +x sql-stream
+sudo mv sql-stream /usr/local/bin/
+```
+
+**macOS (Apple Silicon)**
+```bash
+curl -L https://github.com/1cbyc/sql-stream/releases/latest/download/sql-stream-macos-aarch64 -o sql-stream
+chmod +x sql-stream
+sudo mv sql-stream /usr/local/bin/
+```
+
+**Windows**
+- Download `sql-stream-windows-x86_64.exe` from the releases page
+- Rename to `sql-stream.exe` and add to your PATH
+
 ### From Source
 
 ```bash
@@ -13,12 +48,6 @@ cargo build --release
 ```
 
 The binary will be available at `target/release/sql-stream`.
-
-### Using Cargo
-
-```bash
-cargo install sql-stream
-```
 
 ## Usage
 
@@ -170,12 +199,48 @@ cargo doc --open
 
 ## CI/CD
 
-The project includes a GitHub Actions workflow that runs on every push and pull request:
+The project includes GitHub Actions workflows:
 
-- Format checking (`cargo fmt`)
-- Linting (`cargo clippy`)
-- Cross-platform tests (Linux, macOS, Windows)
-- Release builds
+- **CI Workflow**: Runs on every push and pull request
+  - Format checking (`cargo fmt`)
+  - Linting (`cargo clippy`)
+  - Cross-platform tests (Linux, macOS, Windows)
+  
+- **Release Workflow**: Automated releases on version tags
+  - Builds binaries for Linux (x86_64, musl), Windows (x86_64), macOS (Intel, Apple Silicon)
+  - Uploads release artifacts to GitHub
+  - Publishes to crates.io
+
+## Using as a Library
+
+SQL Stream can be used as a Rust library in your projects:
+
+```toml
+[dependencies]
+sql-stream = "0.1"
+```
+
+```rust
+use sql_stream::{QueryEngine, SqlStreamError};
+
+#[tokio::main]
+async fn main() -> Result<(), SqlStreamError> {
+    let mut engine = QueryEngine::new()?;
+    
+    // Register a CSV file as a table
+    engine.register_file("data.csv", "my_table").await?;
+    
+    // Execute a SQL query
+    let results = engine.execute_query("SELECT * FROM my_table WHERE age > 30").await?;
+    
+    // Print results
+    engine.print_results(results).await?;
+    
+    Ok(())
+}
+```
+
+See the [API documentation](https://docs.rs/sql-stream) for more details.
 
 ## Contributing
 
